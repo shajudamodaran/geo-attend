@@ -18,6 +18,24 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Seeding the database
+
+Load demo businesses, employees, and attendance history (about 30 days) for local development.
+
+1. Set `MONGODB_URI` in `.env` at the project root (same connection string the app uses). The seed script loads `.env` from there when you run it below.
+2. Run:
+
+```bash
+npm run seed
+```
+
+This runs `scripts/seed.ts` via `tsx`. **It deletes all existing businesses, employees, and attendance** in that database, then inserts fresh demo data.
+
+After it finishes, the script prints a business ID and login hints:
+
+- **Owner (dashboard):** `demo@geoattend.in` / `Demo@1234`
+- **Employee check-in PIN:** `1234` for every seeded employee (use the printed business ID on the employee login page)
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

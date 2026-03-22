@@ -1,0 +1,16 @@
+{
+  "name": "GeoAttend",
+  "short_name": "GeoAttend",
+  "theme_color": "#1B4332",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/checkin",
+  "icons": [
+    {
+      "src": "/file.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

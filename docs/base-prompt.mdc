@@ -1,0 +1,303 @@
+---
+alwaysApply: false
+---
+
+```
+You are a senior full-stack engineer and product designer. Build GeoAttend — a production-grade PWA SaaS for geo-tagged employee attendance management targeting Kerala-based small businesses (gold shops, jewellery traders, field sales teams). It must feel like a funded startup product, not a weekend project.
+
+═══════════════════════════════════════════
+TECH STACK
+═══════════════════════════════════════════
+- Next.js 15 (App Router, Server Actions)
+- Tailwind CSS v4
+- Material UI v6
+- MongoDB Atlas via Mongoose
+- NextAuth.js v5 (credentials + Google OAuth)
+- Leaflet.js + React-Leaflet (maps)
+- jsPDF + jspdf-autotable (PDF reports)
+- next-pwa + Workbox (PWA/offline)
+- Cloudinary (photo storage, free tier)
+- Zustand (state management)
+- React Hook Form + Zod (forms + validation)
+- react-hot-toast (notifications)
+- Recharts (analytics charts)
+- Lucide React + MUI Icons
+
+═══════════════════════════════════════════
+FOLDER STRUCTURE
+═══════════════════════════════════════════
+geoattend/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── (dashboard)/
+│   │   ├── layout.tsx
+│   │   ├── dashboard/page.tsx
+│   │   ├── employees/
+│   │   │   ├── page.tsx
+│   │   │   └── [id]/page.tsx
+│   │   ├── attendance/
+│   │   │   ├── page.tsx
+│   │   │   └── live/page.tsx
+│   │   ├── reports/page.tsx
+│   │   └── settings/page.tsx
+│   ├── (employee)/
+│   │   ├── layout.tsx
+│   │   ├── checkin/page.tsx
+│   │   └── history/page.tsx
+│   └── api/
+│       ├── auth/[...nextauth]/route.ts
+│       ├── attendance/
+│       │   ├── route.ts
+│       │   ├── live/route.ts
+│       │   └── [id]/route.ts
+│       ├── employees/
+│       │   ├── route.ts
+│       │   └── [id]/route.ts
+│       ├── reports/
+│       │   ├── pdf/route.ts
+│       │   └── stats/route.ts
+│       └── upload/route.ts
+├── components/
+│   ├── layout/
+│   │   ├── Sidebar.tsx
+│   │   ├── Topbar.tsx
+│   │   └── MobileNav.tsx
+│   ├── dashboard/
+│   │   ├── StatsCard.tsx
+│   │   ├── AttendanceChart.tsx
+│   │   ├── LiveMapWidget.tsx
+│   │   └── RecentActivity.tsx
+│   ├── attendance/
+│   │   ├── CheckInFlow.tsx
+│   │   ├── AttendanceTable.tsx
+│   │   ├── StatusBadge.tsx
+│   │   └── MapPin.tsx
+│   ├── employees/
+│   │   ├── EmployeeCard.tsx
+│   │   ├── AddEmployeeModal.tsx
+│   │   └── EmployeeAvatar.tsx
+│   ├── reports/
+│   │   ├── ReportFilters.tsx
+│   │   └── ExportButton.tsx
+│   └── ui/
+│       ├── PageHeader.tsx
+│       ├── EmptyState.tsx
+│       ├── LoadingSkeleton.tsx
+│       ├── ConfirmDialog.tsx
+│       └── DataTable.tsx
+├── lib/
+│   ├── mongodb.ts
+│   ├── auth.ts
+│   ├── cloudinary.ts
+│   ├── pdf-generator.ts
+│   └── geofence.ts
+├── models/
+│   ├── User.ts
+│   ├── Employee.ts
+│   ├── Attendance.ts
+│   └── Business.ts
+├── hooks/
+│   ├── useGeolocation.ts
+│   ├── useCamera.ts
+│   ├── useAttendance.ts
+│   └── useOfflineSync.ts
+├── store/
+│   └── useAppStore.ts
+├── types/
+│   └── index.ts
+└── public/
+    ├── manifest.json
+    └── icons/
+
+═══════════════════════════════════════════
+DATA MODELS
+═══════════════════════════════════════════
+Business: { _id, name, ownerName, email, passwordHash, phone, address, city, geofenceRadius (default 200m), workStartTime, workEndTime, plan: "free", createdAt }
+
+Employee: { _id, businessId, name, phone, email, role: "field_agent"|"shop_staff"|"manager", department, joiningDate, avatar (Cloudinary URL), isActive, createdAt }
+
+Attendance: { _id, businessId, employeeId, date, checkIn: { time, location: { lat, lng, accuracy, address }, photo (Cloudinary URL), isWithinGeofence, deviceInfo }, checkOut: { time, location, photo }, status: "present"|"absent"|"late"|"half_day", totalHours, notes, createdAt }
+
+═══════════════════════════════════════════
+DESIGN SYSTEM
+═══════════════════════════════════════════
+Primary:        #1B4332 (deep forest green)
+Accent:         #D4AF37 (muted gold)
+Surface:        #FFFFFF
+Background:     #F8F9FA
+Border:         #E9ECEF
+Text Primary:   #111827
+Text Secondary: #6B7280
+Error:          #DC2626
+Success:        #16A34A
+Warning:        #D97706
+
+Font: Inter (Google Fonts)
+Border Radius: 10px cards, 8px inputs, 6px buttons
+Shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)
+Sidebar: 260px wide
+Topbar: 64px tall
+
+═══════════════════════════════════════════
+PAGE SPECIFICATIONS
+═══════════════════════════════════════════
+
+LOGIN (/login):
+- Split layout: left panel = product illustration + "Trusted by Kerala's gold traders", right = form
+- Fields: Email, Password. Google OAuth button
+- Demo credentials shown: demo@geoattend.in / Demo@1234
+- Links: Forgot password, Register
+
+REGISTER (/register):
+- 3-step form with progress indicator:
+  Step 1: Business name, type (Jewellery/Gold Trading/Retail/Other), city
+  Step 2: Owner name, phone (10 digits), email, password (min 8 chars + special char)
+  Step 3: Team size selection, confirmation summary
+- Full Zod validation on every field
+
+OWNER DASHBOARD (/dashboard):
+- Stats row (4 cards): Today Present, Today Absent, Currently Checked In, Late Arrivals
+- Left 60%: Live Leaflet map with employee location pins
+- Right 40%: Recent check-ins feed (avatar + name + time + status badge)
+- Bottom: 14-day attendance bar chart (Recharts) + Top Performer card
+- All data from real API calls with skeleton loaders
+
+EMPLOYEES (/employees):
+- Grid of employee cards: Avatar, Name, Role badge, Department, Phone, Today status badge, View button
+- Top bar: Search, Role filter, Add Employee button
+- Add Employee modal: Name, phone, email, role, department, joining date — all Zod validated
+- Employee detail page (/employees/[id]): Profile header, attendance calendar heatmap, stats, recent log table
+- Empty state: Illustrated with "Add your first team member" CTA
+
+ATTENDANCE LOG (/attendance):
+- Dense table: Employee avatar+name, Date, Check-in time+location, Check-out time, Hours, Status badge, Photo thumbnail (click expands)
+- Filters: Date range picker, Employee dropdown, Status filter
+- Pagination: 10 rows/page
+- Export: "Export PDF" and "Export CSV" buttons
+- Row colors: green=present, amber=late, red=absent
+
+LIVE MAP (/attendance/live):
+- Full-width Leaflet map, satellite/street toggle
+- Custom employee markers: green=checked in, grey=not yet
+- Marker popup: Name, check-in time, photo thumbnail, View Profile link
+- Sidebar list of all employees with real-time status
+
+REPORTS (/reports):
+- Filter panel: Date range, employee multi-select, report type (Daily Summary / Monthly Payroll / Individual)
+- Preview panel showing report structure
+- Generate PDF → branded PDF download with:
+  Business logo + name header, summary table (employee, days present/absent/late, total hours), individual logs with coordinates, page numbers, generated timestamp
+- Monthly trend chart
+
+SETTINGS (/settings):
+- Tabs: Business Profile | Geofence | Work Hours | Notifications
+- Business Profile: Name, address, logo upload, contact
+- Geofence: Leaflet map with draggable radius circle, radius slider (50m–2km), address search
+- Work Hours: Start/end time, grace period (minutes), working days checkboxes (Mon–Sun)
+- Notifications: Toggles for late alerts, absence alerts, weekly report email
+
+EMPLOYEE CHECK-IN (/checkin) — MOBILE FIRST:
+- Step 1: Large "Check In" button, current time + date displayed
+- Step 2: GPS acquisition, animated spinner, accuracy indicator in metres
+- Step 3: Camera capture using browser Camera API, live viewfinder
+- Step 4: Confirm screen — location address + photo preview + Submit
+- Step 5: Success screen with check animation + "You're checked in!"
+- Offline banner: "No internet — will sync when connected", stores to IndexedDB
+
+EMPLOYEE HISTORY (/history):
+- Mobile-optimised list of own attendance records
+- Status badges, hours worked, location address per day
+
+═══════════════════════════════════════════
+API ROUTES
+═══════════════════════════════════════════
+POST   /api/auth/register
+POST   /api/auth/[...nextauth]
+GET    /api/employees                    — all employees for business
+POST   /api/employees                    — create employee
+GET    /api/employees/:id                — single + stats
+PATCH  /api/employees/:id                — update
+DELETE /api/employees/:id                — deactivate
+GET    /api/attendance                   — filtered list (date, employee, status)
+POST   /api/attendance                   — new check-in
+PATCH  /api/attendance/:id               — add check-out or update
+GET    /api/attendance/live              — today, all employees
+POST   /api/upload                       — photo → Cloudinary → return URL
+GET    /api/reports/pdf                  — generate + stream PDF
+GET    /api/reports/stats                — dashboard aggregated stats
+
+All routes: validate request body with Zod before DB operations. Add MongoDB indexes on businessId, employeeId, date fields.
+
+═══════════════════════════════════════════
+PWA + OFFLINE
+═══════════════════════════════════════════
+next.config.js: configure next-pwa with dest: 'public', register: true, skipWaiting: true
+Runtime caching for: API attendance responses, Leaflet map tiles, Cloudinary employee photos
+
+manifest.json:
+{
+  "name": "GeoAttend",
+  "short_name": "GeoAttend",
+  "theme_color": "#1B4332",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/checkin",
+  "icons": [72, 96, 128, 144, 152, 192, 384, 512]
+}
+
+useOfflineSync.ts:
+- Store pending check-ins in IndexedDB using idb-keyval
+- Listen to navigator.onLine changes
+- On reconnect, flush queue to /api/attendance with exponential retry
+
+useGeolocation.ts: wrap navigator.geolocation.getCurrentPosition with Promise, return { lat, lng, accuracy, error }
+useCamera.ts: wrap getUserMedia({ video: { facingMode: 'environment' } }), expose capturePhoto() returning base64 JPEG
+
+═══════════════════════════════════════════
+SEED DATA
+═══════════════════════════════════════════
+Business: { name: "Malabar Gold & Co.", city: "Thrissur", type: "Jewellery Retail", geofenceRadius: 150, workStartTime: "09:30", workEndTime: "19:00" }
+
+Employees:
+- Arun Kumar | field_agent | Sales | 9876543210
+- Priya Menon | shop_staff | Showroom | 9845612345
+- Sreejith Nair | manager | Operations | 9812345678
+- Divya Krishnan | field_agent | Sales | 9867123456
+- Rahul Das | shop_staff | Showroom | 9834567890
+
+Generate 30 days of realistic attendance records for each employee with varied statuses, realistic Thrissur coordinates (10.5276° N, 76.2144° E ± small offsets), and timestamps between 09:00–10:30 for check-in, 18:30–19:30 for check-out.
+
+═══════════════════════════════════════════
+CODE QUALITY RULES (NON-NEGOTIABLE)
+═══════════════════════════════════════════
+1. Every component handles 3 states: loading (MUI Skeleton), error (inline with retry button), empty (illustrated empty state with action CTA)
+2. No `any` types — strict TypeScript throughout
+3. All forms use React Hook Form + Zod resolver — no uncontrolled inputs
+4. All destructive actions require ConfirmDialog before executing
+5. Images use next/image with lazy loading
+6. Mobile breakpoints: sidebar collapses to bottom nav on <md, tables scroll horizontally
+7. Error messages are human: "GPS blocked — tap here to enable location in browser settings" not "Error: permission denied"
+8. Stats cards show real calculated values: "₹18,400 saved this month" (based on prevented fake check-ins at avg ₹300/day), not placeholder zeroes
+9. Copy is product-specific throughout — never generic ("Kerala's most trusted geo-attendance tool" not "Welcome to our app")
+10. No lorem ipsum anywhere — all text is real product copy
+
+═══════════════════════════════════════════
+BUILD ORDER
+═══════════════════════════════════════════
+1. Project setup: Next.js 15 + Tailwind v4 + MUI v6 + MongoDB connection
+2. Auth: NextAuth config, login page, register multi-step page
+3. Mongoose models + seed script (npx ts-node scripts/seed.ts)
+4. Dashboard layout shell: Sidebar, Topbar, MobileNav, responsive breakpoints
+5. Dashboard page: stats API + map widget + chart + activity feed
+6. Employees: list page, detail page, add modal, CRUD API
+7. Attendance: log table, filters, pagination, export, CRUD API
+8. Check-in PWA flow: GPS hook + Camera hook + offline sync + IndexedDB
+9. Live map page: real-time pins, popups, sidebar
+10. Reports: filter UI, PDF generation API, chart
+11. Settings: all 4 tabs functional
+12. PWA: manifest, next-pwa config, Workbox caching, install prompt
+13. Polish: loading skeletons everywhere, error boundaries, empty states
+14. Seed DB, test all flows end-to-end, verify mobile check-in works offline
+```
