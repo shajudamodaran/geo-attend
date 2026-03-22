@@ -80,7 +80,7 @@ export default function CheckInFlow({
       lat: geo.lat,
       lng: geo.lng,
       accuracy: geo.accuracy,
-      address: "Kerala (GPS capture)",
+      address: "GPS capture",
       photoDataUrl: photo ?? undefined,
       deviceInfo,
     };
@@ -122,7 +122,7 @@ export default function CheckInFlow({
           lat: geo.lat,
           lng: geo.lng,
           accuracy: geo.accuracy,
-          address: "Kerala (GPS capture)",
+          address: "GPS capture",
           deviceInfo,
         }),
       });
@@ -152,7 +152,7 @@ export default function CheckInFlow({
             You are still checked in
           </Typography>
           <Typography variant="body2" color="text.secondary" mt={1}>
-            Tap check-out when you leave the showroom or field route so your hours stay accurate for payroll.
+            Tap check-out when you leave the site or finish your route so hours stay accurate for payroll.
           </Typography>
           <Stack spacing={2} mt={2}>
             {!geo ? (
@@ -237,7 +237,7 @@ export default function CheckInFlow({
           <CardContent>
             <Typography fontWeight={800}>Photo proof</Typography>
             <Typography variant="body2" color="text.secondary" mt={1}>
-              A quick selfie at the shop or field location keeps everyone honest — jewellery teams across Kerala use this daily.
+              A quick selfie at the vehicle, site, or branch keeps a clear record for managers and audits.
             </Typography>
             {camError ? <Alert severity="warning">{camError}</Alert> : null}
             <Box

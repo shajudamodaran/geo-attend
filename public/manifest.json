@@ -1,16 +1,23 @@
 {
   "name": "GeoAttend",
   "short_name": "GeoAttend",
-  "theme_color": "#1B4332",
-  "background_color": "#ffffff",
+  "description": "GPS-backed check-ins and attendance for field teams.",
+  "theme_color": "#0D281E",
+  "background_color": "#0D281E",
   "display": "standalone",
   "start_url": "/checkin",
   "icons": [
     {
-      "src": "/file.svg",
-      "sizes": "any",
+      "src": "/icon.svg",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }

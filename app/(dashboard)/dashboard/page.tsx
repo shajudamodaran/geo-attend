@@ -126,7 +126,7 @@ export default function DashboardPage() {
       <Box sx={{ p: { xs: 2, md: 3 } }}>
         <PageHeader
           title="Today on your shop floor"
-          subtitle="Live map pins, late alerts, and payroll-ready hours — tuned for Kerala jewellery teams."
+          subtitle="Live map pins, late alerts, and payroll-ready hours — built for teams on the move."
         />
         {error ? (
           <Alert

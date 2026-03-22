@@ -42,14 +42,14 @@ async function main() {
   const pinHash = await bcrypt.hash("1234", 10);
 
   const business = await Business.create({
-    name: "Malabar Gold & Co.",
+    name: "Summit Field Services (Demo)",
     ownerName: "Demo Owner",
     email: "demo@geoattend.in",
     passwordHash,
     phone: "9895000000",
-    address: "Round South, Thrissur",
+    address: "Industrial Estate, Phase 2",
     city: "Thrissur",
-    businessType: "Jewellery Retail",
+    businessType: "Field services",
     teamSize: "6–15",
     geofenceRadius: 150,
     geofenceCenter: { lat: BASE_LAT, lng: BASE_LNG },
@@ -133,7 +133,7 @@ async function main() {
             lat: cin.lat,
             lng: cin.lng,
             accuracy: 8 + Math.random() * 20,
-            address: "Thrissur, Kerala",
+            address: "Near depot, Thrissur",
           },
           isWithinGeofence: withinIn,
           deviceInfo: "seed",
@@ -144,7 +144,7 @@ async function main() {
             lat: cout.lat,
             lng: cout.lng,
             accuracy: 10 + Math.random() * 25,
-            address: "Thrissur, Kerala",
+            address: "Near depot, Thrissur",
           },
           isWithinGeofence: withinOut,
           deviceInfo: "seed",
@@ -178,9 +178,9 @@ async function main() {
   });
 
   console.log("Seed complete.");
-  console.log("Business ID:", business._id.toString());
+  console.log("Business ID (owner/API):", business._id.toString());
   console.log("Owner login: demo@geoattend.in / Demo@1234");
-  console.log("Employee PIN (all): 1234 — use Business ID above on employee login.");
+  console.log("Employee login: mobile + PIN 1234 — e.g. 9876543210, 9845612345, 9812345678 (see seed team). No business ID required.");
   await mongoose.disconnect();
 }
 

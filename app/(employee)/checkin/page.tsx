@@ -44,7 +44,7 @@ export default function CheckInPage() {
         GeoAttend check-in
       </Typography>
       <Typography variant="body2" color="text.secondary" mb={2}>
-        Built for Kerala jewellery teams — GPS + photo in one flow, even when the showroom Wi-Fi flickers.
+        GPS + photo in one flow — built for crews on sites and routes, even when Wi‑Fi or signal is patchy.
       </Typography>
       {loading ? (
         <Typography color="text.secondary">Loading your shift…</Typography>

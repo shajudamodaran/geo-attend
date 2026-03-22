@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import { normalizePhoneDigits } from "@/lib/phone";
 
 const googleEnabled =
   Boolean(process.env.AUTH_GOOGLE_ID ?? process.env.GOOGLE_CLIENT_ID) &&
@@ -67,9 +68,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           import("bcryptjs"),
         ]);
         await connectDB();
+        const normalizedPhone = normalizePhoneDigits(String(phone));
         const employee = await Employee.findOne({
           businessId,
-          phone: String(phone).replace(/\D/g, "").slice(-10),
+          phone: normalizedPhone,
           isActive: true,
         });
         if (!employee?.checkInPinHash) return null;
@@ -82,6 +84,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: "employee" as const,
           businessId: employee.businessId.toString(),
           employeeId: employee._id.toString(),
+          phone: employee.phone,
         };
       },
     }),
@@ -94,6 +97,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.employeeId = user.employeeId;
         token.name = user.name;
         token.email = user.email;
+        const u = user as { phone?: string };
+        if (u.phone) token.phone = u.phone;
+        else delete token.phone;
       }
       if (account?.provider === "google" && user?.email) {
         const [{ default: connectDB }, { default: Business }] = await Promise.all([
@@ -104,14 +110,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         let business = await Business.findOne({ email: user.email.toLowerCase() });
         if (!business) {
           business = await Business.create({
-            name: `${user.name ?? "Malabar"} Gold & Co.`,
+            name: `${user.name ?? "Owner"}'s workspace`,
             ownerName: user.name ?? "Owner",
             email: user.email.toLowerCase(),
             passwordHash: "",
             phone: "",
             address: "",
-            city: "Kerala",
-            businessType: "Jewellery",
+            city: "",
+            businessType: "Field services",
           });
         }
         token.role = "owner";
@@ -134,6 +140,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         if (token.name) session.user.name = token.name as string;
         if (token.email) session.user.email = token.email as string;
+        if (token.phone) {
+          session.user.phone = token.phone as string;
+        } else {
+          delete session.user.phone;
+        }
       }
       return session;
     },

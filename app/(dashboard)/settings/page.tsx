@@ -98,7 +98,7 @@ export default function SettingsPage() {
     <>
       <Topbar title="Settings" />
       <Box sx={{ p: { xs: 2, md: 3 } }}>
-        <PageHeader title="Workplace controls" subtitle="Profile, geofence, hours, and alerts — everything your Kerala team feels day to day." />
+        <PageHeader title="Workplace controls" subtitle="Profile, geofence, hours, and alerts — what your field and floor teams run on daily." />
         {error ? (
           <Alert severity="error" action={<Button onClick={() => void load()}>Retry</Button>} sx={{ mb: 2 }}>
             {error}
@@ -124,7 +124,7 @@ export default function SettingsPage() {
         {tab === 1 ? (
           <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">
-              Drag the map or tap a new spot to move the jewellery counter anchor. Combine with the radius slider (50m–2km).
+              Drag the map or tap a new spot to set your workplace anchor (office, yard, or main site). Combine with the radius slider (50m–2km).
             </Typography>
             <GeofencePicker
               center={business.geofenceCenter}

@@ -7,6 +7,8 @@ declare module "next-auth" {
       role: "owner" | "employee";
       businessId: string;
       employeeId?: string;
+      /** Set for employees — used to prefill login when switching workplace. */
+      phone?: string;
     };
   }
 
@@ -14,6 +16,7 @@ declare module "next-auth" {
     role?: "owner" | "employee";
     businessId?: string;
     employeeId?: string;
+    phone?: string;
   }
 }
 
@@ -22,5 +25,6 @@ declare module "next-auth/jwt" {
     role?: "owner" | "employee";
     businessId?: string;
     employeeId?: string;
+    phone?: string;
   }
 }

@@ -31,10 +31,10 @@ npm run seed
 
 This runs `scripts/seed.ts` via `tsx`. **It deletes all existing businesses, employees, and attendance** in that database, then inserts fresh demo data.
 
-After it finishes, the script prints a business ID and login hints:
+After it finishes, the script prints login hints:
 
 - **Owner (dashboard):** `demo@geoattend.in` / `Demo@1234`
-- **Employee check-in PIN:** `1234` for every seeded employee (use the printed business ID on the employee login page)
+- **Employee check-in:** open **Employee login**, enter a seeded employee’s **10-digit mobile** (from the seed output) and PIN **`1234`** — no business ID needed; if that number exists in more than one demo company, you’ll pick the workplace.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

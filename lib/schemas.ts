@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const registerSchema = z.object({
   businessName: z.string().min(2),
-  businessType: z.enum(["Jewellery", "Gold Trading", "Retail", "Other"]),
+  businessType: z.enum(["Field services", "Retail", "Services", "Manufacturing", "Other"]),
   city: z.string().min(2),
   ownerName: z.string().min(2),
   phone: z.string().regex(/^[0-9]{10}$/, "Enter a valid 10-digit mobile number"),
@@ -12,6 +12,12 @@ export const registerSchema = z.object({
     .min(8)
     .regex(/[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/]/, "Add at least one special character"),
   teamSize: z.string().min(1),
+});
+
+/** Public employee login: find workplaces for this mobile + PIN. */
+export const employeeLookupSchema = z.object({
+  phone: z.string().min(1),
+  pin: z.string().min(4).max(6),
 });
 
 export const employeeCreateSchema = z.object({

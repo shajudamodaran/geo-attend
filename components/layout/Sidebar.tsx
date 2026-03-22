@@ -45,7 +45,7 @@ export default function Sidebar() {
           GeoAttend
         </Typography>
         <Typography variant="caption" color="text.secondary">
-          Kerala&apos;s most trusted geo-attendance tool
+          Geo attendance for field &amp; floor teams
         </Typography>
       </Stack>
       <Stack spacing={0.5} px={1} flex={1}>

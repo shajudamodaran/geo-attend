@@ -25,7 +25,7 @@ export default function RegisterWizard() {
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     businessName: "",
-    businessType: "Jewellery" as "Jewellery" | "Gold Trading" | "Retail" | "Other",
+    businessType: "Field services" as "Field services" | "Retail" | "Services" | "Manufacturing" | "Other",
     city: "",
     ownerName: "",
     phone: "",
@@ -65,10 +65,10 @@ export default function RegisterWizard() {
     <Box sx={{ minHeight: "100vh", py: 6, px: 2, bgcolor: "background.default" }}>
       <Paper sx={{ maxWidth: 720, mx: "auto", p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
         <Typography variant="h5" fontWeight={900}>
-          Register your Kerala business
+          Register your business
         </Typography>
         <Typography variant="body2" color="text.secondary" mt={1}>
-          Jewellery, gold trading, and retail teams use GeoAttend to replace paper registers with GPS-backed proof.
+          For teams that work outside one desk — field crews, service routes, retail floors, and hybrid ops. Replace paper registers with map-backed attendance.
         </Typography>
         <Stepper activeStep={active} sx={{ mt: 4, mb: 3 }}>
           {steps.map((label) => (
@@ -82,9 +82,10 @@ export default function RegisterWizard() {
           <Stack spacing={2}>
             <TextField label="Business name" value={values.businessName} onChange={(e) => setValues({ ...values, businessName: e.target.value })} fullWidth required />
             <TextField select label="Business type" value={values.businessType} onChange={(e) => setValues({ ...values, businessType: e.target.value as typeof values.businessType })} fullWidth>
-              <MenuItem value="Jewellery">Jewellery</MenuItem>
-              <MenuItem value="Gold Trading">Gold trading</MenuItem>
-              <MenuItem value="Retail">Retail</MenuItem>
+              <MenuItem value="Field services">Field &amp; mobile teams</MenuItem>
+              <MenuItem value="Retail">Retail &amp; storefront</MenuItem>
+              <MenuItem value="Services">Professional services</MenuItem>
+              <MenuItem value="Manufacturing">Manufacturing &amp; logistics</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
             </TextField>
             <TextField label="City" value={values.city} onChange={(e) => setValues({ ...values, city: e.target.value })} fullWidth required />

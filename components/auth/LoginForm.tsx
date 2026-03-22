@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Box, Button, Divider, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -46,48 +46,120 @@ export default function LoginForm({ googleEnabled }: { googleEnabled: boolean })
         }}
       >
         <Typography variant="h3" fontWeight={900}>
-          Trusted by Kerala&apos;s gold traders
+          Attendance that travels with your team
         </Typography>
-        <Typography variant="body1" sx={{ mt: 2, opacity: 0.9, maxWidth: 420 }}>
-          GeoAttend pins every check-in to a real map coordinate with a photo receipt — built for jewellery showrooms, bullion counters, and field sales routes.
+        <Typography variant="body1" sx={{ mt: 2, opacity: 0.9, maxWidth: 440, lineHeight: 1.65 }}>
+          GeoAttend ties every check-in to a map pin and optional photo proof — for any business with people on the road, at job sites, or between branches. Works offline-first when signal drops.
         </Typography>
       </Grid>
-      <Grid item xs={12} md={6} sx={{ display: "flex", alignItems: "center", justifyContent: "center", p: 3 }}>
-        <Paper elevation={0} sx={{ p: 4, width: "100%", maxWidth: 440, borderRadius: 3, border: "1px solid", borderColor: "divider" }}>
-          <Typography variant="h5" fontWeight={800}>
-            Sign in to GeoAttend
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mt={1}>
-            Demo owner: <strong>demo@geoattend.in</strong> / <strong>Demo@1234</strong> after running the seed script.
-          </Typography>
-          {googleEnabled ? (
-            <>
-              <Button fullWidth variant="outlined" sx={{ mt: 3 }} onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
-                Continue with Google
-              </Button>
-              <Divider sx={{ my: 3 }}>or</Divider>
-            </>
-          ) : null}
-          <Box component="form" onSubmit={(e) => void onSubmit(e)}>
-            <Stack spacing={2}>
-              <TextField label="Work email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required fullWidth autoComplete="email" />
-              <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required fullWidth autoComplete="current-password" />
-              <Button type="submit" variant="contained" size="large" disabled={loading} fullWidth>
-                {loading ? "Signing in…" : "Sign in"}
-              </Button>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          px: { xs: 3, sm: 5, md: 8 },
+          py: { xs: 5, sm: 6, md: 10 },
+          bgcolor: "background.default",
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 4, sm: 5, md: 6 },
+            width: "100%",
+            maxWidth: 440,
+            borderRadius: 3,
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "0 12px 40px rgba(17, 24, 39, 0.06)",
+          }}
+        >
+          <Stack spacing={4} alignItems="stretch">
+            <Stack spacing={1.25} alignItems="flex-start">
+              <Typography
+                variant="overline"
+                sx={{
+                  color: "text.secondary",
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  lineHeight: 1.2,
+                }}
+              >
+                Business owners
+              </Typography>
+              <Typography
+                component="h1"
+                variant="h4"
+                fontWeight={800}
+                sx={{
+                  letterSpacing: "-0.03em",
+                  lineHeight: 1.2,
+                  fontSize: { xs: "1.65rem", sm: "2rem" },
+                }}
+              >
+                Sign in
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65, maxWidth: 360 }}>
+                Use your work email to open the dashboard, maps, and exports.
+              </Typography>
             </Stack>
-          </Box>
-          <Stack direction="row" justifyContent="space-between" mt={2}>
-            <Typography variant="body2" component={Link} href="/register" sx={{ color: "secondary.dark", fontWeight: 700 }}>
-              Create business
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Forgot password? Email support@geoattend.in
-            </Typography>
+
+            {googleEnabled ? (
+              <Stack spacing={3}>
+                <Button fullWidth variant="outlined" size="large" onClick={() => signIn("google", { callbackUrl: "/dashboard" })}>
+                  Continue with Google
+                </Button>
+                <Divider>
+                  <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                    or with email
+                  </Typography>
+                </Divider>
+              </Stack>
+            ) : null}
+
+            <Box component="form" onSubmit={(e) => void onSubmit(e)} noValidate>
+              <Stack spacing={2.5}>
+                <TextField label="Work email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required fullWidth autoComplete="email" />
+                <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required fullWidth autoComplete="current-password" />
+                <Button type="submit" variant="contained" size="large" disabled={loading} fullWidth sx={{ py: 1.35, mt: 0.5 }}>
+                  {loading ? "Signing in…" : "Sign in"}
+                </Button>
+              </Stack>
+            </Box>
+
+            <Stack spacing={2} sx={{ pt: 0.5 }}>
+              <Divider />
+              <Stack spacing={1.5} alignItems="flex-start">
+                <Button
+                  component={Link}
+                  href="/register"
+                  variant="text"
+                  color="secondary"
+                  sx={{ alignSelf: "flex-start", p: 0, minWidth: 0, fontWeight: 700, fontSize: "0.9375rem" }}
+                >
+                  Create a business account
+                </Button>
+                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65 }}>
+                  Forgot password?{" "}
+                  <Box component="a" href="mailto:support@geoattend.in" sx={{ color: "primary.main", fontWeight: 600, textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>
+                    support@geoattend.in
+                  </Box>
+                </Typography>
+                <Button
+                  component={Link}
+                  href="/employee-login"
+                  variant="text"
+                  color="primary"
+                  sx={{ alignSelf: "flex-start", p: 0, minWidth: 0, fontWeight: 700, fontSize: "0.9375rem", mt: 0.5 }}
+                >
+                  Employee login (PIN)
+                </Button>
+              </Stack>
+            </Stack>
           </Stack>
-          <Alert severity="info" sx={{ mt: 3 }}>
-            Team members should use the dedicated employee login to open the mobile check-in PWA.
-          </Alert>
         </Paper>
       </Grid>
     </Grid>
