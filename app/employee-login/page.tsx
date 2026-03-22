@@ -14,14 +14,35 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { EMPLOYEE_LAST_BUSINESS_KEY, EMPLOYEE_LAST_PHONE_KEY } from "@/lib/employee-storage";
 import { normalizePhoneDigits } from "@/lib/phone";
 
-const LAST_PHONE_KEY = "geoattend-employee-phone";
-const LAST_BUSINESS_KEY = "geoattend-business-id";
+function EmployeeLoginQuerySync() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const handled = useRef(false);
+
+  useEffect(() => {
+    if (handled.current) return;
+    if (searchParams.has("logout")) {
+      handled.current = true;
+      toast.success("You are signed out.");
+      router.replace("/employee-login", { scroll: false });
+      return;
+    }
+    if (searchParams.has("switch")) {
+      handled.current = true;
+      toast("Enter your mobile and PIN to choose another workplace.", { duration: 4500 });
+      router.replace("/employee-login", { scroll: false });
+    }
+  }, [searchParams, router]);
+
+  return null;
+}
 
 type MatchRow = { businessId: string; businessName: string; employeeName: string };
 
@@ -35,7 +56,7 @@ export default function EmployeeLoginPage() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = window.localStorage.getItem(LAST_PHONE_KEY);
+    const saved = window.localStorage.getItem(EMPLOYEE_LAST_PHONE_KEY);
     if (saved && /^\d{10}$/.test(saved)) {
       setPhone(saved);
     }
@@ -55,9 +76,14 @@ export default function EmployeeLoginPage() {
       toast.error("Could not sign in. Try again or check your PIN.");
       return;
     }
+    const session = await getSession();
+    if (!session?.user?.employeeId) {
+      toast.error("Session did not load. Please try Continue again.");
+      return;
+    }
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(LAST_PHONE_KEY, normalized);
-      window.localStorage.setItem(LAST_BUSINESS_KEY, businessId);
+      window.localStorage.setItem(EMPLOYEE_LAST_PHONE_KEY, normalized);
+      window.localStorage.setItem(EMPLOYEE_LAST_BUSINESS_KEY, businessId);
     }
     router.push("/checkin");
     router.refresh();
@@ -106,7 +132,11 @@ export default function EmployeeLoginPage() {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", p: 2, bgcolor: "background.default" }}>
+    <>
+      <Suspense fallback={null}>
+        <EmployeeLoginQuerySync />
+      </Suspense>
+      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", p: 2, bgcolor: "background.default" }}>
       <Paper sx={{ p: 3, width: "100%", maxWidth: 440, borderRadius: 3 }}>
         <Typography variant="h5" fontWeight={900}>
           Employee login
@@ -190,6 +220,7 @@ export default function EmployeeLoginPage() {
           </Button>
         </Typography>
       </Paper>
-    </Box>
+      </Box>
+    </>
   );
 }

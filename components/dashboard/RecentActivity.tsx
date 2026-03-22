@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Card, CardContent, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { Avatar, Box, Card, CardContent, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import StatusBadge from "@/components/attendance/StatusBadge";
 import type { AttendanceStatus } from "@/types";
 
@@ -27,18 +27,19 @@ export default function RecentActivity({ items }: { items: RecentRow[] }) {
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  <Typography fontWeight={700} variant="body2">
+                  <Typography fontWeight={700} variant="body2" component="span" display="block">
                     {r.name}
                   </Typography>
                 }
                 secondary={
-                  <>
-                    <Typography variant="caption" color="text.secondary" display="block">
+                  <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 0.75, pt: 0.25 }}>
+                    <Typography variant="caption" color="text.secondary" component="span" display="block">
                       {r.timeLabel}
                     </Typography>
                     <StatusBadge status={r.status} />
-                  </>
+                  </Box>
                 }
+                secondaryTypographyProps={{ component: "div" }}
               />
             </ListItem>
           ))}

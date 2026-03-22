@@ -19,7 +19,7 @@ export default function CheckInFlow({
   hasOpenCheckIn: boolean;
   onCompleted: () => void;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const employeeId = session?.user?.employeeId;
   const { getPosition, loading: geoLoading } = useGeolocation();
   const { startPreview, stopPreview, capturePhoto, error: camError } = useCamera();
@@ -140,8 +140,16 @@ export default function CheckInFlow({
     }
   };
 
-  if (!employeeId) {
-    return <Alert severity="error">Session missing — sign in again from the employee login.</Alert>;
+  if (sessionStatus === "loading") {
+    return (
+      <Box sx={{ py: 5, display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <CircularProgress color="primary" aria-label="Loading session" />
+      </Box>
+    );
+  }
+
+  if (sessionStatus === "unauthenticated" || !employeeId) {
+    return <Alert severity="error">Session missing — open Employee login and sign in again.</Alert>;
   }
 
   if (hasOpenCheckIn && todayAttendanceId) {

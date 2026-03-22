@@ -104,9 +104,9 @@ export default function ReportsPage() {
               </Typography>
               {loading ? <Skeleton variant="rounded" height={240} /> : null}
               {!loading && trend.length ? (
-                <Box sx={{ width: "100%", height: 240, minWidth: 0 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trend}>
+                <Box sx={{ width: "100%", minWidth: 0, height: 240 }}>
+                  <ResponsiveContainer width="100%" height={240}>
+                    <LineChart data={trend} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                       <YAxis allowDecimals={false} width={28} />
