@@ -2,13 +2,25 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+/** Must match Auth.js cookie names: `__Secure-authjs.session-token` on HTTPS, plain `authjs.session-token` on HTTP. */
+function isHttpsRequest(req: NextRequest): boolean {
+  if (req.nextUrl.protocol === "https:") return true;
+  const forwarded = req.headers.get("x-forwarded-proto");
+  const first = forwarded?.split(",")[0]?.trim();
+  return first === "https";
+}
+
 export async function middleware(req: NextRequest) {
   const secret = process.env.AUTH_SECRET;
   if (!secret) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req, secret });
+  const token = await getToken({
+    req,
+    secret,
+    secureCookie: isHttpsRequest(req),
+  });
   const role = token?.role as "owner" | "employee" | undefined;
 
   const { pathname } = req.nextUrl;
